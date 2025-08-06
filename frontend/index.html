@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AI Form Builder for DHTMLX Suite</title>
+    <link rel="stylesheet" href="https://cdn.dhtmlx.com/suite/edge/suite.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.34.1/min/vs/editor/editor.main.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="control-panel">
+            <header>
+                <h1>AI Form Builder</h1>
+                <p>Describe the form you need below, and the AI will generate it for you.</p>
+            </header>
+            <div class="input-section">
+                <div id="prompt-container"></div>
+                <div class="suggestions-container">
+                    <h3>Or try one of these examples:</h3>
+                    <div id="suggestions-pills" class="suggestions-pills"></div>
+                </div>
+                <div id="generate-btn-container"></div>
+                <div id="loader" style="display: none;" class="loader">Generating...</div>
+                <div id="error-message"></div>
+            </div>
+        </div>
+        <div class="output-panel">
+            <div class="preview-section">
+                <h2>Generated Form Preview</h2>
+                <div id="form-preview-container"></div>
+            </div>
+            <div class="preview-section json-preview-section">
+                <h2>Generated JSON Configuration</h2>
+                <div class="json-preview-container">
+                    <div id="json-editor-container"></div>
+                    <div class="editor-btn-container">
+                        <button id="update-btn" class="editor-btn">Update Preview</button>
+                        <button id="copy-btn" class="editor-btn">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.dhtmlx.com/suite/edge/suite.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.34.1/min/vs/loader.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
