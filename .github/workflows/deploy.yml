@@ -1,0 +1,48 @@
+name: Deploy Form Builder AI Demo
+
+on:
+  push:
+    branches: [ next ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Custom Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.CUSTOM_REGISTRY_URL }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ${{ secrets.CUSTOM_REGISTRY_URL }}/form-builder-ai-demo:next
+          build-args: |
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            OPENAI_BASE_URL=${{ secrets.OPENAI_BASE_URL }}
+            CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }}
+
+      - name: Trigger Server Restart Webhook
+        run: |
+          curl -X POST "${{ secrets.WEBHOOK_URL }}"
