@@ -2,13 +2,12 @@ name: Deploy Form Builder AI Demo
 
 on:
   push:
-    branches: [ next ]
+    branches: [ main, next ]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -37,7 +36,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ secrets.CUSTOM_REGISTRY_URL }}/form-builder-ai-demo:next
+          tags: ${{ secrets.CUSTOM_REGISTRY_URL }}/form-builder-ai-demo:${{ github.ref_name }}
           build-args: |
             OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
             OPENAI_BASE_URL=${{ secrets.OPENAI_BASE_URL }}
@@ -45,4 +44,8 @@ jobs:
 
       - name: Trigger Server Restart Webhook
         run: |
-          curl -X POST "${{ secrets.WEBHOOK_URL }}"
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            curl -X POST "${{ secrets.WEBHOOK_URL_MAIN }}"
+          elif [ "${{ github.ref_name }}" = "next" ]; then
+            curl -X POST "${{ secrets.WEBHOOK_URL_NEXT }}"
+          fi
